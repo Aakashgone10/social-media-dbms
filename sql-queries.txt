@@ -1,0 +1,671 @@
+Structured Query Language Implementation
+RELATIONS:-
+
+CREATE TABLE Users(
+UserID NUMBER PRIMARY KEY,
+UserName VARCHAR(30),
+FirstName VARCHAR(30),
+LastName VARCHAR(30),
+Email VARCHAR(30),
+DOB DATE,
+CreationDate DATE,
+Bio VARCHAR(100),
+Password VARCHAR(30),
+AccountType VARCHAR(40),
+LastSeen TIMESTAMP,
+StoryID NUMBER UNIQUE NOT NULL,
+CONSTRAINT account_type CHECK(AccountType in ('Business','Personal'))
+);
+
+CREATE TABLE Friends(
+SourceUserID NUMBER,
+DestUserID NUMBER,
+DOC DATE,
+Relationship VARCHAR(30),
+PRIMARY KEY(SourceUserID,DestUserID),
+FOREIGN KEY(SourceUserID) REFERENCES Users(UserID),
+FOREIGN KEY(DestUserID) REFERENCES Users(UserID)
+);
+
+
+CREATE TABLE Story(
+StoryID NUMBER PRIMARY KEY,
+Views NUMBER,
+StoryTime TIMESTAMP,
+FOREIGN KEY(StoryID) REFERENCES Users(StoryID)
+);
+
+CREATE TABLE Mentions(
+StoryID NUMBER,
+MentionID NUMBER, 
+PRIMARY KEY(StoryID,MentionID),
+FOREIGN KEY(StoryID) REFERENCES Story(StoryID),
+FOREIGN KEY(MentionID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE DirectMessage(
+SourceUserID NUMBER,
+DestUserID NUMBER,
+MsgTime TIMESTAMP,
+MsgData VARCHAR(30),
+MsgType VARCHAR(30),
+PRIMARY KEY(SourceUserID,DestUserID,MsgTime),
+FOREIGN KEY(SourceUserID) REFERENCES USERS(UserID),
+FOREIGN KEY(DestUserID) REFERENCES USERS(UserID)
+);
+
+
+CREATE TABLE Groups(
+GroupID NUMBER PRIMARY KEY,
+GroupName VARCHAR(30),
+Description VARCHAR(100),
+CreationTime TIMESTAMP
+);
+
+
+CREATE TABLE GroupMessage(
+GroupID NUMBER,
+UserID NUMBER,
+MsgData VARCHAR(30),
+MsgType VARCHAR(30),
+MsgTime TIMESTAMP,
+PRIMARY KEY (GroupID,UserID,MSGTIME),--
+FOREIGN KEY (GroupID) REFERENCES GROUPS(GroupID),
+FOREIGN KEY (UserID) REFERENCES USERS(UserID)
+);
+
+CREATE TABLE GroupMembers(
+UserID NUMBER,
+GroupId NUMBER, --
+UserName VARCHAR(30),
+Privilege VARCHAR(30),
+DOJ DATE,
+PRIMARY KEY(GroupId,UserID),
+FOREIGN KEY(UserID) REFERENCES USERS(UserID),
+FOREIGN KEY(GroupID) REFERENCES GROUPS(GroupID),
+CHECK ( Privilege in ('admin','member')) 
+);
+
+CREATE TABLE TopicTags(
+TagID NUMBER PRIMARY KEY,
+TagName VARCHAR(30)
+);
+
+
+CREATE TABLE Posts(
+PostID NUMBER PRIMARY KEY,
+UserID NUMBER,
+Caption VARCHAR(30),
+PostType VARCHAR(30),
+PostTagID NUMBER,
+PostTime TIMESTAMP,
+LikesNo NUMBER,
+CommentsNo NUMBER,
+FOREIGN KEY (UserId) REFERENCES Users(UserID),
+FOREIGN KEY (PostTagID) REFERENCES TopicTags(TagID)
+);
+
+
+CREATE TABLE Likes(
+PostID NUMBER,
+UserID NUMBER,
+LikeTime TIMESTAMP,
+PRIMARY KEY (PostID,UserID),
+FOREIGN KEY (UserID) REFERENCES Users(UserID),
+FOREIGN KEY (PostID) REFERENCES Posts(PostID)
+);
+
+
+
+
+CREATE TABLE Comments(
+PostID NUMBER,
+UserID NUMBER,
+CmtData VARCHAR(30),
+CmtTime TIMESTAMP,
+PRIMARY KEY (PostID,UserID),
+FOREIGN KEY (UserID) REFERENCES Users(UserID),
+FOREIGN KEY (PostID) REFERENCES Posts(PostID)
+);
+
+
+CREATE TABLE Recommended(
+TagID NUMBER,
+UserId NUMBER,
+LikeFreq NUMBER,
+CmtFreq NUMBER,
+PRIMARY KEY (TagID,UserID),
+FOREIGN KEY (TagID) REFERENCES TopicTags(TagID),
+FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+Insertion of Values:-
+
+INSERT INTO Users VALUES
+(1201,'akash123','akash','gone','aakash123@gmail.com','12-JUN-1994','15-FEB-2009',
+'cse 2nd year','aakash99','Personal','26-MAR-21 08:51:16.78',50209);
+INSERT INTO Users VALUES
+(1202,'ram16','ram','konidela','ram16@hotmail.com','13-SEP-1996','18-JUL-2011',
+'hero','99089','Personal','30-MAR-21 07:48:16.38',50210);
+INSERT INTO Users VALUES
+(1203,'naveen07','naveen','palacharla','navi@gmail.com','11-MAY-1198','11-OCT-2009',
+'be good do good','nav171','Personal','30-MAR-21 11:23:18.61',50211);
+INSERT INTO Users VALUES
+(1204,'sweety','Sweety','Sharma','sweety@gmail.com','29-DEC-1995','06-JAN-2011',
+'Keepin it real since 95','99s$w99','Business','28-MAR-21 11:41:43.76',50212);
+INSERT INTO Users VALUES
+(1205,'honey99','Honey','singh','honey100@gmail.com','21-MAR-1997','04-APR-2012',
+'Pizza lover','##**ahhhhmed**##','Personal','01-APR-21 05:21:08.64',50213);
+INSERT INTO Users VALUES
+(1206,'mahesh77','Mahesh','Babu','mahesh@aol.com','08-JUN-1998','09-AUG-2008',
+'Vibing on tea','*m@hesh__90&&','Business','01-APR-21 06:31:16.28',50214);
+INSERT INTO Users VALUES
+(1207,'akshay69','Akshay','kollu','akshay@outlook.com','02-APR-1996','01-SEP-2008',
+'Fashion designing is fun!','*awaryloother1&','Personal','28-MAR-21 10:57:34.66',50215);
+INSERT INTO Users VALUES
+(1208,'raziaaaa','Razia','Sultana','raziaaa01@gmail.com','05-AUG-1999','18-FEB-2012',
+'Loving basketball','rsauzlitaana','Personal','24-MAR-21 09:22:43.54',50216);
+INSERT INTO Users VALUES
+(1209,'suzi1234','Suzie','Everton','suzfuz@aol.com','13-MAY-1996','12-JUL-2012',
+'To the reader, mgbu with more work','seuvzeriteon','Personal','29-MAR-21 06:50:11.38',50217);
+INSERT INTO Users VALUES
+(1210,'aadi90','aadi','banoth','aadi@hotmail.com','06-MAR-1998','17-SEP-2009',
+'Swimming is my passion','raadiiir4738','Business','30-MAR-21 01:15:37.67',50218);
+INSERT INTO Users VALUES
+(1211,'harry3101','Harmanpreet','Kaur','thepunjabikudi@aol.com','31-JAN-1996','14-DEC-2008',
+'Brown kudi :)','ruakhar9292','Personal','30-MAR-21 02:21:11.59',50219);
+INSERT INTO Users VALUES
+(1212,'shelly_13','Shaurya','Trivedi','kingshaurya@outlook.com','13-JAN-1997','26-FEB-2009',
+'Fitness addict','*34shoreyeah43*','Personal','29-MAR-21 02:41:12.43',50220);
+
+
+
+
+INSERT INTO Friends VALUES(1202,1209,'04-OCT-2018','Family');
+INSERT INTO Friends VALUES(1202,1210,'05-DEC-2016','Educational');
+INSERT INTO Friends VALUES(1202,1211,'02-NOV-2017','Colleague');
+INSERT INTO Friends VALUES(1202,1212,'12-NOV-2017','Family');
+INSERT INTO Friends VALUES(1203,1204,'01-SEP-2018','Educational');
+INSERT INTO Friends VALUES(1203,1205,'15-NOV-2016','Colleague');
+INSERT INTO Friends VALUES(1203,1210,'03-MAY-2017','Educational');
+INSERT INTO Friends VALUES(1204,1207,'05-JUN-2016','Family');
+INSERT INTO Friends VALUES(1204,1208,'09-JUL-2018','Educational');
+INSERT INTO Friends VALUES(1204,1209,'06-APR-2015','Educational');
+INSERT INTO Friends VALUES(1204,1212,'03-MAR-2014','Family');
+INSERT INTO Friends VALUES(1205,1206,'10-JAN-2016','Educational');
+INSERT INTO Friends VALUES(1205,1207,'18-JUN-2016','Colleague');
+INSERT INTO Friends VALUES(1205,1212,'16-SEP-2018','Colleague');
+INSERT INTO Friends VALUES(1206,1207,'26-NOV-2014','Educational');
+INSERT INTO Friends VALUES(1206,1208,'09-MAY-2016','Educational');
+INSERT INTO Friends VALUES(1207,1208,'08-JUL-2014','Family');
+INSERT INTO Friends VALUES(1208,1209,'17-NOV-2016','Educational');
+INSERT INTO Friends VALUES(1209,1210,'10-JUN-2014','Educational');
+INSERT INTO Friends VALUES(1210,1212,'04-FEB-2017','Colleague');
+INSERT INTO Friends VALUES(1211,1212,'08-OCT-2019','Family');
+
+
+INSERT INTO Story VALUES(50209,23,'30-MAR-21 04:43:09.24');
+INSERT INTO Story VALUES(50210,43,'30-MAR-21 11:01:55.55');
+INSERT INTO Story VALUES(50211,68,'30-MAR-21 02:49:41.76');
+INSERT INTO Story VALUES(50212,12,'30-MAR-21 09:06:14.54');
+INSERT INTO Story VALUES(50213,54,'30-MAR-21 10:35:06.32');
+INSERT INTO Story VALUES(50214,26,'30-MAR-21 07:41:05.24');
+INSERT INTO Story VALUES(50215,76,'30-MAR-21 08:17:09.11');
+INSERT INTO Story VALUES(50216,33,'30-MAR-21 11:33:16.08');
+INSERT INTO Story VALUES(50217,39,'30-MAR-21 07:58:08.88');
+INSERT INTO Story VALUES(50218,49,'30-MAR-21 11:14:49.43');
+INSERT INTO Story VALUES(50219,31,'30-MAR-21 08:27:05.29');
+INSERT INTO Story VALUES(50220,61,'30-MAR-21 04:55:08.19');
+
+
+
+
+INSERT INTO Mentions VALUES(50211,1201);
+INSERT INTO Mentions VALUES(50212,1206);
+INSERT INTO Mentions VALUES(50214,1212);
+INSERT INTO Mentions VALUES(50218,1204);
+INSERT INTO Mentions VALUES(50219,1203);
+
+
+INSERT INTO DirectMessage VALUES
+(1201,1202,'12-MAR-12 04:29:18.73','HEY','.text');
+INSERT INTO DirectMessage VALUES
+(1201,1202,'13-MAR-12 04:29:18.73',' at 5.00 pm','.text');
+INSERT INTO DirectMessage VALUES
+(1202,1201,'14-OCT-13 05:19:48.73','https://newspaper.html','.html');
+INSERT INTO DirectMessage VALUES
+(1201,1203,'15-SEP-15 06:29:38.73','How much is the fee?','.text');
+INSERT INTO DirectMessage VALUES
+(1204,1205,'16-DEC-14 07:29:28.73','/files/info.png','.png');
+INSERT INTO DirectMessage VALUES
+(1205,1204,'17-MAR-17 08:24:18.73','/folder/assignment.pdf','.pdf');
+INSERT INTO DirectMessage VALUES
+(1205,1202,'18-JAN-18 09:29:08.73','Happy Birthday!','text');
+INSERT INTO DirectMessage VALUES
+(1204,1203,'19-MAR-12 04:39:58.73','/files/song.mp3','.mp3');
+INSERT INTO DirectMessage VALUES
+(1207,1212,'13-FEB-18 06:27:38.73','bye','text');
+INSERT INTO DirectMessage VALUES
+(1209,1210,'16-AUG-19 07:09:15.73','/files/stars.png','.png');
+
+
+
+INSERT INTO Groups VALUES
+(78545,'College Friends','To share memories and casual chat','26-JUN-12 09:39:16.78');
+INSERT INTO Groups VALUES
+(78546,'Carpool for Work','Driver no.: 1234 ','16-SEP-18 12:19:17.98');
+INSERT INTO Groups VALUES
+(78547,'Presentation Team','Presentation on traffic data. Deadline tomorrow','07-OCT-14 03:23:08.65');
+INSERT INTO Groups VALUES
+(78548,'Family Group','Peace, love and happiness','29-MAR-12 07:29:14.72');
+INSERT INTO Groups VALUES
+(78549,'Painting Club','Paint away the world!','12-FEB-12 04:39:18.73');
+
+----USERNAME
+INSERT INTO GroupMembers VALUES(1201,78545,'akash123','member','12-APR-14'); 
+INSERT INTO GroupMembers VALUES(1202,78545,'ram16','admin','13-APR-15');
+INSERT INTO GroupMembers VALUES(1203,78545,'naveen07','member','14-OCT-19');
+INSERT INTO GroupMembers VALUES(1204,78545,'sweety','member','15-APR-13');
+INSERT INTO GroupMembers VALUES(1205,78549,'honey99','admin','16-NOV-15');
+INSERT INTO GroupMembers VALUES(1206,78549,'mahesh77','member','01-APR-12');
+INSERT INTO GroupMembers VALUES(1203,78547,'naveen07','admin','17-DEC-17');
+INSERT INTO GroupMembers VALUES(1208,78547,'raziaaa','member','02-APR-16');
+INSERT INTO GroupMembers VALUES(1209,78547,'suzi1234','member','17-MAR-18');
+INSERT INTO GroupMembers VALUES(1210,78546,'aadi90','admin','03-AUG-13');
+INSERT INTO GroupMembers VALUES(1211,78546,'harry3101','member','11-MAY-14');
+INSERT INTO GroupMembers VALUES(1212,78548,'shelly_13','member','10-OCT-17');
+
+
+INSERT INTO GroupMessage VALUES
+(78545,1201,'Hello','.txt','12-FEB-12 04:39:18.73');
+INSERT INTO GroupMessage VALUES
+(78545,1201,'Hello','.txt','12-NOV-12 04:39:18.73');
+INSERT INTO GroupMessage VALUES
+(78545,1202,'/files/flower.png','.png','12-OCT-12 04:30:18.73');
+INSERT INTO GroupMessage VALUES
+(78545,1201,'Hi','.txt','16-FEB-12 04:36:18.73');
+INSERT INTO GroupMessage VALUES
+(78546,1205,'/files/beach.jpeg','.jpeg','22-SEP-17 04:38:18.73');
+INSERT INTO GroupMessage VALUES
+(78546,1206,'This is the plan','.txt','02-FEB-12 04:37:18.73');
+INSERT INTO GroupMessage VALUES
+(78547,1203,'Here is the file','.txt','17-FEB-13 04:39:18.73');
+INSERT INTO GroupMessage VALUES
+(78547,1208,'Agenda/speech.mp3','.mp3','12-DEC-12 04:59:18.73');
+INSERT INTO GroupMessage VALUES
+(78547,1209,'Thank you','.txt','18-FEB-18 04:37:18.73');
+INSERT INTO GroupMessage VALUES
+(78549,1210,'Send the details','.txt','12-MAR-12 04:29:18.73');
+INSERT INTO GroupMessage VALUES
+(78549,1211,'folder/rules.txt','.txt','13-FEB-14 04:49:18.73');
+
+
+
+INSERT INTO TopicTags VALUES (7653,'CaptureIt');
+INSERT INTO TopicTags VALUES (7654,'Trendz');
+INSERT INTO TopicTags VALUES (7655,'Vibing');
+INSERT INTO TopicTags VALUES (7656,'Inspire');
+INSERT INTO TopicTags VALUES (7657,'Art_fo_life');
+INSERT INTO TopicTags VALUES (7658,'foodiez');
+INSERT INTO TopicTags VALUES (7659,'OceanWaves');
+INSERT INTO TopicTags VALUES (7660,'chill');
+INSERT INTO TopicTags VALUES (7661,'EDMLove');
+INSERT INTO TopicTags VALUES (7662,'HipHop');
+INSERT INTO TopicTags VALUES (7663,'Assignment');
+INSERT INTO TopicTags VALUES (7664,'YOLO');
+INSERT INTO TopicTags VALUES (7665,'Engineering');
+INSERT INTO TopicTags VALUES (7666,'Cheems');
+INSERT INTO TopicTags VALUES (7667,'meme');
+
+
+INSERT INTO Posts VALUES
+(293434, 1206, 'Sea''s swayin''... ', '/videos/20190127_042010.mp4', 7659, '27-JAN-2019
+04:20:10.01',0,0);
+
+INSERT INTO Posts VALUES
+(293435, 1204, 'I''m a Bachelors of Memology .',
+'/images/20200122_071011.jpg', 7667, '22-JAN-2020 07:10:10.51',0,0);
+INSERT INTO Posts VALUES
+(293436, 1209, 'is to Inspire', '/mpeg-4/2015_014517.m4a',
+7656, '05-FEB-2019 01:45:16.31',0,0);
+INSERT INTO Posts VALUES
+(293437, 1211, 'Dance to death...', '/videos/20170407_062539.mp4',
+7662, '07-APR-2017 06:25:38.58',0,0);
+INSERT INTO Posts VALUES
+(293438, 1208, 'Expressin heart ...with art!', '/images/20180311_071517.jpeg',
+7657, '11-MAR-2018 07:15:17.05',0,0);
+INSERT INTO Posts VALUES
+(293439, 1203, 'Plate was Full.', '/images/20170812_054511.jpg',
+7658, '12-AUG-2017 05:45:10.49',0,0);
+INSERT INTO Posts VALUES
+(293440, 1208, 'B..focus ain''t mandated', '/images/20200628_080253.jpg',
+7653, '28-JUN-2020 08:02:52.13',0,0);
+INSERT INTO Posts VALUES
+(293441, 1211, 'You Only Live Once...Damn!', '/videos/20171106_013112.mp4',
+7664, '06-NOV-2017 01:31:11.01',0,0);
+INSERT INTO Posts VALUES
+(293442, 1204, '..am i the Cheems??', '/videos/20190423_091623.mp4',
+7666, '23-APR-2019 09:16:23.02',0,0);
+INSERT INTO Posts VALUES
+(293443, 1202, 'Century!!...', 'images/20181009_060916.jpeg',
+7654, '09-OCT-2018 06:09:16.01',0,0);
+INSERT INTO Posts VALUES
+(293444, 1205, '..Procatination ',
+'images/20200709_064018.jpg', 7663, '09-JUL-2020 06:40:17.41',0,0);
+INSERT INTO Posts VALUES
+(293445, 1212, 'had enough of life...*Slurps*', '/images/20210224_031238.jpg',
+7658, '24-FEB-2021 03:12:38.07',0,0);
+INSERT INTO Posts VALUES
+(293446, 1210, 'rock it YOLO', 'mpeg-4/20161229_080027.m4a',
+7664, '29-DEC-2016 08:00:27.15',0,0);
+INSERT INTO Posts VALUES
+(293447, 1201, 'Million days with terrace air', '/images/20190605_060353.jpg',
+7660, '05-JUN-2019 06:03:53.21',0,0);
+INSERT INTO Posts VALUES
+(293448, 1202, 'keep inspiring...', '/videos/20190922_014546.mp4',
+7656, '22-SEP-2019 01:45:46.18',0,0);
+
+INSERT INTO Posts VALUES
+(293449, 1206, 'Smile in pain...', '/images/20181020_094612.jpg',
+7665, '20-OCT-2018 09:46:11.41',0,0);
+INSERT INTO Posts VALUES
+(293450, 1212, 'Damn.just EDM''s are Enough', '/music/20201127_111158.mp3',
+7661, '27-NOV-2020 11:11:58.01',0,0);
+INSERT INTO Posts VALUES
+(293451, 1207, 'Trop tard, Trop.', '/videos/201903_021446.mp4',
+7662, '25-MAR-2017 02:14:46.32',0,0);
+INSERT INTO Posts VALUES
+(293452, 1205, '...only Fools rush in', '/music/20180814_120022.mp3',
+7655, '14-AUG-2018 12:00:22.09',0,0);
+
+
+
+INSERT INTO Likes VALUES ( 293441, 1208, '25-02-18 11:25:44.12');
+INSERT INTO Likes VALUES ( 293438, 1205, '07-04-18 11:45:46.34');
+INSERT INTO Likes VALUES ( 293439, 1201, '01-04-18 11:08:36.51');
+INSERT INTO Likes VALUES ( 293438, 1204, '09-11-18 08:55:52.00');
+INSERT INTO Likes VALUES ( 293446, 1201, '19-09-17 07:23:11.46');
+INSERT INTO Likes VALUES ( 293439, 1211, '11-07-18 03:57:43.45');
+INSERT INTO Likes VALUES ( 293442, 1208, '23-03-20 10:38:54.13');
+INSERT INTO Likes VALUES ( 293446, 1210, '04-08-17 02:56:32.16');
+INSERT INTO Likes VALUES ( 293434, 1208, '20-05-19 12:14:57.43');
+INSERT INTO Likes VALUES ( 293441, 1204, '11-04-18 12:52:05.41');
+INSERT INTO Likes VALUES ( 293437, 1211, '20-06-17 12:57:59.15');
+INSERT INTO Likes VALUES ( 293442, 1205, '23-09-19 05:01:00.35');
+INSERT INTO Likes VALUES ( 293448, 1206, '10-06-20 11:19:27.53');
+INSERT INTO Likes VALUES ( 293447, 1207, '26-09-19 11:07:05.59');
+INSERT INTO Likes VALUES ( 293445, 1203, '09-02-22 04:57:08.43');
+INSERT INTO Likes VALUES ( 293445, 1209, '20-06-21 03:09:43.16');
+INSERT INTO Likes VALUES ( 293442, 1207, '03-01-20 09:14:12.13');
+INSERT INTO Likes VALUES ( 293438, 1211, '24-06-18 11:42:56.12');
+INSERT INTO Likes VALUES ( 293443, 1208, '11-02-19 09:39:52.14');
+INSERT INTO Likes VALUES ( 293435, 1207, '10-10-20 06:50:53.41');
+
+
+INSERT INTO Comments VALUES
+( 293444, 1201, 'Go strt ur Assigns now...','15-07-20 02:44:30.43');
+INSERT INTO Comments VALUES
+( 293441, 1209, 'tht''s the coolest thing ','28-12-17 05:04:16.16');
+INSERT INTO Comments VALUES
+( 293445, 1206, 'our way ...the foodiez way!!','28-02-21 10:07:27.00');
+INSERT INTO Comments VALUES
+( 293434, 1211, 'oceans..the timing','17-02-19 06:44:30.09');
+INSERT INTO Comments VALUES
+( 293434, 1203, 'Beauty.','03-02-19 12:02:33.08');
+INSERT INTO Comments VALUES
+( 293436, 1202, 'Made my day <3','28-03-19 11:23:58.01');
+INSERT INTO Comments VALUES
+( 293443, 1203, 'in petrol pump tho','05-11-18 09:49:38.59');
+INSERT INTO Comments VALUES
+( 293435, 1202, 'damn...keep going...','25-01-20 08:38:09.22');
+INSERT INTO Comments VALUES
+( 293439, 1203, 'lurin us ehhh??','14-09-17 05:36:38.18');
+INSERT INTO Comments VALUES
+( 293443, 1208, 'true..not in stadium tho','13-10-18 06:29:56.48');
+INSERT INTO Comments VALUES
+( 293442, 1207, 'RIP cheems...','11-05-19 12:09:41.14');
+INSERT INTO Comments VALUES
+( 293446, 1201, 'wohww..the perfect song !!','02-03-17 02:47:15.51');
+INSERT INTO Comments VALUES
+( 293438, 1205, 'seriously!!?','13-05-18 12:17:15.52');
+INSERT INTO Comments VALUES
+( 293437, 1206, 'u''ve got tht grace...thts litt','26-04-17 05:32:51.26');
+INSERT INTO Comments VALUES
+( 293445, 1201, 'uhmm uhmm..*','24-02-21 05:28:47.53');
+INSERT INTO Comments VALUES
+( 293434, 1201, 'aye...swayin''<3','05-03-19 04:24:52.51');
+INSERT INTO Comments VALUES
+( 293444, 1208, 'bro!.','19-07-20 05:20:46.45');
+INSERT INTO Comments VALUES
+( 293436, 1209, 'thts great!','06-02-19 11:34:22.01');
+INSERT INTO Comments VALUES
+( 293438, 1210, 'killerrrr!!','20-04-18 04:53:05.05');
+INSERT INTO Comments VALUES
+( 293443, 1202, 'aye..','22-10-18 12:42:52.50');
+INSERT INTO Comments VALUES
+( 293436, 1206, 'okkeiii..','15-03-19 10:49:18.03');
+INSERT INTO Comments VALUES
+( 293444, 1209, 'smile in pain...','17-07-20 09:57:58.06');
+
+SOME SQL AND PL/SQL QUERIES:-
+
+
+1)  NUMBER OF FREINDS FOR EVERY USER
+
+SELECT COUNT(USERID),username
+FROM USERS U,FRIENDS F
+WHERE U.USERID=F.SOURCEUSERID OR U.USERID=F.DESTUSERID
+GROUP BY USERID,username
+ORDER BY COUNT(USERID) DESC;
+
+2)WHO HAD NO LIKES OR COMMENTS FOR POSTS
+
+SELECT  DISTINCT POSTS.USERID
+FROM POSTS,LIKES,COMMENTS
+WHERE (POSTS.POSTID=LIKES.POSTID AND POSTS.POSTID=COMMENTS.POSTID) AND (LIKESNO=0 AND COMMENTSNO =0);
+
+
+3) MENTIONED  IN THEIR STORY
+
+SET SERVEROUTPUT ON
+DECLARE
+STID USERS.STORYID%TYPE:=&STID;
+UID USERS.USERID%TYPE;
+UN1 USERS.USERNAME%TYPE;
+UN2 USERS.USERNAME%TYPE;
+MID MENTIONS.MENTIONID%TYPE;
+CURSOR CC IS SELECT MENTIONID FROM MENTIONS WHERE STORYID=STID;
+BEGIN
+SELECT USERNAME INTO UN1
+FROM USERS
+WHERE STORYID=STID;
+OPEN CC;
+LOOP
+FETCH CC INTO MID;
+EXIT WHEN CC%NOTFOUND;
+SELECT USERNAME INTO UN2
+FROM USERS
+WHERE USERID=MID;
+DBMS_OUTPUT.PUT_LINE(UN1||' MENTIONED '||UN2||'  IN THEIR STORY');
+END LOOP;
+END;
+
+
+4)LOGIN
+
+SET SERVEROUTPUT ON;
+DECLARE
+flag number:=0;
+UNAME  Users.UserName%type;
+PW Users.PASSWORD%TYPE;
+USRNAME  Users.UserName%type;
+PWord Users.PASSWORD%TYPE;
+fn users.FirstName%type;
+ln users.LastName%type;
+em users.Email%type;
+db users.DOB%type;
+cd users.CreationDate%type;
+bb users.Bio%type;
+CURSOR CC IS 
+SELECT USERNAME,FIRSTNAME,LASTNAME,EMAIL,DOB,CREATIONDATE,BIO,password FROM USERS;
+BEGIN
+UNAME:=&Uname;
+PW:=&PW;
+OPEN CC;
+LOOP    
+FETCH CC into usrname,fn,ln,em,db,cd,bb,pword;
+exit when cc%notfound;
+if usrname=Uname and pword=pw
+then dbms_output.put_line(usrname||'  '||fn||'  '||ln||' '||em||'  '||db||'  '||cd||'  '||bb||'  '||pword);
+flag:=1;
+exit;
+end if;
+end loop;
+if flag=0
+then dbms_output.put_line('incorrect username or password');
+end if;
+END;
+
+
+5)change password
+
+SET SERVEROUTPUT ON;
+DECLARE
+flag number:=0;
+UNAME  Users.UserName%type;
+PW Users.PASSWORD%TYPE;
+newpw Users.PASSWORD%TYPE;
+USRNAME  Users.UserName%type;
+PWord Users.PASSWORD%TYPE;
+fn users.FirstName%type;
+ln users.LastName%type;
+em users.Email%type;
+db users.DOB%type;
+cd users.CreationDate%type;
+bb users.Bio%type;
+CURSOR CC IS 
+SELECT USERNAME,FIRSTNAME,LASTNAME,EMAIL,DOB,CREATIONDATE,BIO,password FROM USERS;
+BEGIN
+UNAME:=&Uname;
+PW:=&PW;
+OPEN CC;
+LOOP    
+FETCH CC into usrname,fn,ln,em,db,cd,bb,pword;
+exit when cc%notfound;
+if usrname=Uname and pword=pw
+then dbms_output.put_line('enter new  password');
+newpw:=&newpw;
+UPDATE USERS SET PASSWORD=newpw
+where username=usrname and password=pw;
+flag:=1;
+exit;
+end if;
+end loop;
+if flag=0
+then dbms_output.put_line('incorrect username or password');
+end if;
+END;
+
+
+6) NOTIFY GROUP MESSAGE
+
+--notify group message
+CREATE OR REPLACE TRIGGER NOTIFYTRIGG
+AFTER INSERT ON GROUPMESSAGE
+FOR EACH ROW
+DECLARE
+NGROUPID NUMBER:=:NEW.GROUPID;
+UID users.userid%type;
+UNAME1 USERS.USERNAME%TYPE;
+UNAME2 USERS.USERNAME%TYPE;
+CURSOR CC IS SELECT USERID FROM GROUPMEMBERS WHERE GROUPID=NGROUPID;
+BEGIN
+SELECT USERNAME INTO UNAME1 FROM USERS WHERE USERID=:NEW.USERID;
+OPEN CC;
+LOOP
+FETCH CC INTO UID;
+EXIT WHEN CC%NOTFOUND;
+SELECT USERNAME INTO UNAME2 FROM USERS WHERE USERID=UID;
+IF :NEW.MSGTYPE='.txt'
+then
+DBMS_OUTPUT.PUT_LINE(UNAME2||' : '||UNAME1||' SENDS A TEXT - '||:NEW.MSGDATA);
+elsif :new.msgtype='.jpeg'
+then
+DBMS_OUTPUT.PUT_LINE(UNAME2||' : '||UNAME1||' SENDS A jpeg file - '||:NEW.MSGDATA);
+elsif :new.msgtype='.mp3'
+then
+DBMS_OUTPUT.PUT_LINE(UNAME2||' : '||UNAME1||' SENDS A mp3 file - '||:NEW.MSGDATA);
+elsif :new.msgtype='.png'
+then
+DBMS_OUTPUT.PUT_LINE(UNAME2||' : '||UNAME1||' SENDS A png file - '||:NEW.MSGDATA);
+end if;
+
+END LOOP;
+DBMS_OUTPUT.PUT_LINE(UNAME2||' : '||UNAME1||' SENDS A png file - '||:NEW.MSGDATA);
+CLOSE CC;
+END;
+
+
+7)LIKES COUNT AND COMMENT COUNT
+
+SET SERVEROUTPUT ON;
+DECLARE
+pid likes.postid%type;
+CURSOR CL IS 
+SELECT POSTID FROM LIKES;
+CURSOR CC IS
+SELECT POSTID FROM COMMENTS;
+BEGIN
+OPEN CL;
+LOOP
+FETCH CL INTO pid;
+UPDATE POSTS
+SET LIKESNO=LIKESNO+1
+WHERE POSTID=PID;
+EXIT WHEN CL%NOTFOUND;
+END LOOP;
+OPEN CC;
+LOOP
+FETCH CC INTO pid;
+UPDATE POSTS
+SET COMMENTSNO=COMMENTSNO+1
+WHERE POSTID=PID;
+EXIT WHEN CC%NOTFOUND;
+END LOOP;
+END;
+
+
+8)POSTS BY FRIENDS  ON TOPICS
+
+CREATE OR REPLACE TRIGGER trigposts
+AFTER INSERT ON POSTS
+FOR EACH ROW 
+DECLARE
+UID NUMBER;
+UN USERS.USERNAME%TYPE;
+F1S FRIENDS.SOURCEUSERID%TYPE;
+F1D FRIENDS.DESTUSERID%TYPE;
+UN1 USERS.USERNAME%TYPE;
+UN2 USERS.USERNAME%TYPE;
+TAGSTR TOPICTAGS.TAGNAME%TYPE;
+CURSOR CC IS SELECT  USERS.USERNAME,FRIENDS.SOURCEUSERID,FRIENDS.DESTUSERID 
+FROM USERS INNER JOIN FRIENDS
+ON (USERS.USERID=FRIENDS.SOURCEUSERID OR USERS.USERID=FRIENDS.DESTUSERID)
+WHERE uSERS.userid=:new.userid;
+BEGIN
+OPEN CC;
+LOOP
+FETCH CC INTO UN,F1S,F1D;
+EXIT WHEN CC%NOTFOUND;
+SELECT TAGNAME  INTO TAGSTR FROM topictags WHERE TAGID=:NEW.POSTTAGID;
+if F1S=:new.userid
+then SELECT USERNAME INTO UN1 FROM USERS WHERE USERID=F1D;
+DBMS_OUTPUT.PUT_LINE(UN1||':   POST  FROM '||UN||' ON '||TAGSTR);
+ELSIF F1D=:new.userid
+then SELECT USERNAME INTO UN2 FROM USERS WHERE USERID=F1S;
+DBMS_OUTPUT.PUT_LINE(UN2||' : POST FROM  '||UN|| ' ON '||TAGSTR);
+END IF;
+END LOOP;
+dbms_output.put_line(:NEW.USERID);
+END;
+/
